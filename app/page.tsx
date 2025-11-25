@@ -6,6 +6,7 @@ import Lenis from "@studio-freight/lenis";
 import SpineGlobeScene from "@/components/SpineGlobeScene";
 import AnimatedContent from "@/components/AnimatedContent";
 import slides from "@/components/contentSlides";
+import { Mosaic } from 'react-loading-indicators';
 
 export default function Home() {
   // progress 0..1 controlling how much the Spine overlay has moved up
@@ -74,6 +75,37 @@ export default function Home() {
     };
   }, []);
 
+  // Loader overlay state: show a loading screen while models are fetched
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
+  const [loaderFading, setLoaderFading] = useState(false);
+
+  useEffect(() => {
+    // Fetch the GLB files so they'll be cached for useGLTF in the scene.
+    // When both complete, trigger fade-out of the loader.
+    let canceled = false;
+    const modelUrls = ['/models/Spine.glb', '/models/Logo.glb'];
+
+    Promise.all(modelUrls.map((u) => fetch(u, { cache: 'reload' }).then((r) => r.arrayBuffer()).catch(() => null)))
+      .then(() => {
+        if (canceled) return;
+        setModelsLoaded(true);
+        // start fade-out
+        setLoaderFading(true);
+        // remove overlay after transition (match CSS duration below: 600ms)
+        setTimeout(() => setShowLoader(false), 650);
+      })
+      .catch(() => {
+        if (canceled) return;
+        // even on error, remove loader so UI isn't blocked indefinitely
+        setModelsLoaded(true);
+        setLoaderFading(true);
+        setTimeout(() => setShowLoader(false), 650);
+      });
+
+    return () => { canceled = true; };
+  }, []);
+
   // heroHidden when overlay fully covers hero (progress >= 1)
   const heroHidden = progress >= 0.999;
 
@@ -92,6 +124,29 @@ export default function Home() {
 
   return (
     <main className="relative w-full min-h-screen" style={{ backgroundColor: '#000' }}>
+      {/* Loader overlay that sits above the canvas/content */}
+      {showLoader && (
+        <div
+          aria-hidden={!showLoader}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#000',
+            zIndex: 10001,
+            pointerEvents: 'auto',
+            transition: 'opacity 600ms ease, transform 600ms ease',
+            opacity: loaderFading ? 0 : 1,
+            transform: loaderFading ? 'translateY(-8px)' : 'translateY(0px)'
+          }}
+        >
+          <div style={{ textAlign: 'center' }}>
+            <Mosaic color="#fff" size="medium" text="" textColor="" />
+          </div>
+        </div>
+      )}
       <SpineGlobeScene pages={pages} setPages={setPages} />
       <AnimatedContent pages={pages} />
     </main>
