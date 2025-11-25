@@ -10,7 +10,7 @@ type ModelProps = JSX.IntrinsicElements['group'] & { scaleFactor?: number };
 function SpineModel(props: ModelProps) {
   const gltf = useGLTF('/models/Spine.glb');
   // Match HeroSection spine scale (1.5)
-  try { gltf.scene.scale.setScalar(3); } catch (e) {}
+  try { gltf.scene.scale.setScalar(3); } catch (e) { }
   // Apply material tuning similar to HeroSection
   try {
     gltf.scene.traverse((obj: any) => {
@@ -25,17 +25,17 @@ function SpineModel(props: ModelProps) {
           if (typeof mat.envMapIntensity === 'number' || mat.envMapIntensity === undefined) mat.envMapIntensity = 2.0;
           if (mat.emissive) mat.emissive.multiplyScalar(0.0);
           mat.needsUpdate = true;
-        } catch (e) {}
+        } catch (e) { }
       });
     });
-  } catch (e) {}
+  } catch (e) { }
   return <primitive object={gltf.scene} {...props} />;
 }
 
 function GlobeModel(props: ModelProps) {
   const gltf = useGLTF('/models/Logo.glb');
   // Match HeroSection logo scale (0.78)
-  try { gltf.scene.scale.setScalar(0.5); } catch (e) {}
+  try { gltf.scene.scale.setScalar(0.5); } catch (e) { }
   // Mild material refinement for a crisper logo
   try {
     gltf.scene.traverse((obj: any) => {
@@ -48,10 +48,10 @@ function GlobeModel(props: ModelProps) {
           if (typeof mat.roughness === 'number') mat.roughness = Math.max(0.08, (mat.roughness || 0.8) * 0.6);
           if (typeof mat.envMapIntensity === 'number' || mat.envMapIntensity === undefined) mat.envMapIntensity = 1.8;
           mat.needsUpdate = true;
-        } catch (e) {}
+        } catch (e) { }
       });
     });
-  } catch (e) {}
+  } catch (e) { }
   return <primitive object={gltf.scene} {...props} />;
 }
 
@@ -140,13 +140,13 @@ function SceneContent({ externalScrollRef, setPages }: { externalScrollRef?: Rea
             const computedPages = Math.max(1.5, 1 + extraViewports);
             setPages(computedPages);
           }
-        } catch (e) {}
+        } catch (e) { }
       } catch (e) {
         // fallback if anything goes wrong
         topYRef.current = spineBox.max.y;
         bottomYRef.current = spineBox.min.y;
       }
-    } catch (e) {}
+    } catch (e) { }
   }, [spineRef.current, globeRef.current]);
 
   useFrame((state, dt) => {
@@ -156,7 +156,7 @@ function SceneContent({ externalScrollRef, setPages }: { externalScrollRef?: Rea
     try {
       const dbg = document.getElementById('spine-scroll-debug');
       if (dbg) dbg.textContent = `scroll: ${offset !== undefined ? offset.toFixed(3) : 'n/a'}`;
-    } catch (e) {}
+    } catch (e) { }
 
     // Target Y derived from scroll (logo floats between top and bottom of spine)
     const targetY = THREE.MathUtils.lerp(topYRef.current, bottomYRef.current, offset);
@@ -169,7 +169,7 @@ function SceneContent({ externalScrollRef, setPages }: { externalScrollRef?: Rea
       const horizDist = Math.hypot(camera.position.x, camera.position.z) || 1e-6;
       const lookY = camera.position.y - horizDist * Math.tan(pitch);
       camera.lookAt(0, lookY, 0);
-    } catch (e) {}
+    } catch (e) { }
 
     // Logo vertical interpolation + scroll-driven orbit
     if (globeRef.current) {
@@ -205,7 +205,7 @@ function SceneContent({ externalScrollRef, setPages }: { externalScrollRef?: Rea
           posDamp,
           dt
         );
-      } catch (e) {}
+      } catch (e) { }
 
       // Scroll-progress-driven self-rotation (no time dependency)
       const selfAngle = offset * selfRevolutions * Math.PI * 2;
@@ -232,17 +232,17 @@ function SceneContent({ externalScrollRef, setPages }: { externalScrollRef?: Rea
           rotDamp,
           dt
         );
-      } catch (e) {}
-        // Damped yaw offset so logo turns to the right at the top/bottom only.
-        // orbitFactor already computed above; use edgeFactor = 1 - orbitFactor (1 at extremes)
-        try {
-          const edgeFactor = 1 - Math.max(0, 4 * offset * (1 - offset));
-          const desiredYawOffset = edgeFactor * extremeYaw;
-          const yawDamp = 6;
-          yawOffsetRef.current = THREE.MathUtils.damp(yawOffsetRef.current, desiredYawOffset, yawDamp, dt);
-        } catch (e) {}
-        // Apply combined yaw (self-rotation + extreme offset)
-        globeRef.current.rotation.y = selfAngle + (yawOffsetRef.current || 0);
+      } catch (e) { }
+      // Damped yaw offset so logo turns to the right at the top/bottom only.
+      // orbitFactor already computed above; use edgeFactor = 1 - orbitFactor (1 at extremes)
+      try {
+        const edgeFactor = 1 - Math.max(0, 4 * offset * (1 - offset));
+        const desiredYawOffset = edgeFactor * extremeYaw;
+        const yawDamp = 6;
+        yawOffsetRef.current = THREE.MathUtils.damp(yawOffsetRef.current, desiredYawOffset, yawDamp, dt);
+      } catch (e) { }
+      // Apply combined yaw (self-rotation + extreme offset)
+      globeRef.current.rotation.y = selfAngle + (yawOffsetRef.current || 0);
     }
 
     // Keep spine centered (static). If needed, adjust scale or animations here.
@@ -252,8 +252,8 @@ function SceneContent({ externalScrollRef, setPages }: { externalScrollRef?: Rea
   return (
     <group>
       {/* Lighting */}
-        <ambientLight intensity={2.0} />
-        <hemisphereLight args={[0xffffff, 0x222233, 1.2]} />
+      <ambientLight intensity={2.0} />
+      <hemisphereLight args={[0xffffff, 0x222233, 1.2]} />
       <directionalLight position={[6, 8, 4]} intensity={2.5} castShadow />
       <directionalLight position={[-6, 6, -6]} intensity={0.6} />
       <pointLight position={[0, 4, 6]} intensity={1.6} distance={24} decay={2} />
@@ -319,7 +319,7 @@ export default function SpineGlobeScene({ pages = 2.5, setPages }: { pages?: num
         window.removeEventListener('scroll', onScroll);
         window.removeEventListener('resize', onScroll);
       };
-    } catch (e) {}
+    } catch (e) { }
   }, [pages]);
   return (
     <div id={rootId} style={{ width: '100%', position: 'relative', touchAction: 'pan-y' }}>
@@ -328,13 +328,13 @@ export default function SpineGlobeScene({ pages = 2.5, setPages }: { pages?: num
         camera={{ position: [0, 3.4, 8.5], fov: 95 }}
         style={{ position: 'fixed', inset: 0, width: '100%', height: '100%' }}
       >
-          {/* HDR environment for strong PBR reflections (applies to materials only) */}
-          <Environment files="/hdr/env.hdr" background={false} />
+        {/* HDR environment for strong PBR reflections (applies to materials only) */}
+        <Environment files="/hdr/env.hdr" background={false} />
         <ScrollControls pages={pages}>
           <SceneContent externalScrollRef={externalScrollRef} setPages={setPages} />
         </ScrollControls>
       </Canvas>
-        <style>{`canvas { background: #000; }`}</style>
+      <style>{`canvas { background: #000; }`}</style>
 
       {/* Native scroll spacer so mouse wheel/touch scrolls the page and ScrollControls syncs to it */}
       <div style={{ height: `${pages * 100}vh`, width: '1px', pointerEvents: 'auto' }} />

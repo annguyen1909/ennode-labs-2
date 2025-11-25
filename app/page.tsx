@@ -3,9 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 // @ts-ignore
 import Lenis from "@studio-freight/lenis";
-import HeroSection from "@/components/HeroSection";
-import HTMLContent from "@/components/HTMLContent";
-import LoaderPreload from "@/components/LoaderPreload";
 import SpineGlobeScene from "@/components/SpineGlobeScene";
 import AnimatedContent from "@/components/AnimatedContent";
 import slides from "@/components/contentSlides";
@@ -80,9 +77,6 @@ export default function Home() {
   // heroHidden when overlay fully covers hero (progress >= 1)
   const heroHidden = progress >= 0.999;
 
-  // loading overlay state for the user's loader component
-  const [showLoader, setShowLoader] = useState(true);
-  const [loaderFading, setLoaderFading] = useState(false);
   // number of viewports the spine overlay should occupy (shared with SpineGlobeScene)
   const [pages, setPages] = useState(Math.max(4, (slides && slides.length) || 4));
 
