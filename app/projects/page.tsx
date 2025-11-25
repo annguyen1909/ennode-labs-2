@@ -34,6 +34,16 @@ const projects: Project[] = [
     thumbnail: '/assets/physics-thumb.jpg',
     link: '/projects/project-2',
     accentColor: '#4060ff'
+  },
+    {
+    id: 'project-3',
+    title: 'Car Experience',
+    description: 'High-fidelity 3D car model with customizable materials, environment lighting, and advanced post-processing effects.',
+    category: 'Visualization',
+    tags: ['Car', '3D', 'WebGL'],
+    thumbnail: '/assets/car-thumb.jpg',
+    link: '/projects/project-3',
+    accentColor: '#4060ff'
   }
 ]
 

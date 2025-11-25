@@ -3,6 +3,7 @@ import { Geist_Mono } from "next/font/google";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
+import LenisProvider from '@/components/LenisProvider'
 
 const geistMono = Geist_Mono({
   variable: "--font-mono",
@@ -29,6 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className= {`${montserrat.variable} ${geistMono.variable} antialiased`}>
+        <LenisProvider />
         <NavBar />
         <div className="">{children}</div>
       </body>
