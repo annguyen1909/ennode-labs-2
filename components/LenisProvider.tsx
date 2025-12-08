@@ -19,9 +19,8 @@ export default function LenisProvider() {
         lenisRef.current = new Lenis({
           duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          smooth: true,
           smoothWheel: true,
-          smoothTouch: true,
+          syncTouch: true,
         })
 
         // expose for debugging
